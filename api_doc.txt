@@ -1,0 +1,9 @@
+Intended API will link to pokemontcg.io (abbr PTCG)
+
+PTCG uses text parameters to retrieve matching card objects. Card objects house a wealth of 
+information and form a JSON formatted return. 
+See detail here: https://docs.pokemontcg.io/api-reference/cards/search-cards/
+
+Dev API key for this database: b97ddab5-5569-4912-91b7-a3a93776f78d
+Header for API: X-Api-Key
+Daily limits are 20,000
