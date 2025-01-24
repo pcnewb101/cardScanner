@@ -1,5 +1,7 @@
+# Python Version 3.12.4
 # pip install opencv-python opencv-python-headless
 # pip install pillow
 # pip install pytesseract
 # pip install numpy
+
 
