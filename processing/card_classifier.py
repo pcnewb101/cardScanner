@@ -29,9 +29,6 @@ def preprocess_image(image_path):
         blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
     )
     
-    cv2.imshow("processed_image", thresh)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     
     return image, thresh
 
@@ -58,7 +55,6 @@ def trainer_text_test(thresh, roi_list):
 
         logo_text = pytesseract.image_to_string(cropped_bin, config ='--psm 13')
 
-        print(logo_text)
         if re.match(r"(?i)Trainer\s*", logo_text):
             return True
                 

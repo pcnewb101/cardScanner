@@ -1,3 +1,0 @@
-## will define the process to find ROIs of set numbers and the preprocessing of those cropped images.
-## Different preprocessing setting are likely needed and as such will have a different function calls.
-## Ideally, these functions will be called in read_card py so each image only has to be access in one section of time/memory.

@@ -3,8 +3,15 @@
 ###   AND OVERWRITE EXISTING FILES.
 
 
+
+## TODO: when saving the files- some special characters are being used in the save name causing problems
+## in additional iterations.
+
+
+
 import requests
 import os
+import cv2
 
 # Base URL
 url = "https://api.pokemontcg.io/v2/sets"
@@ -50,47 +57,66 @@ for i, symbol in enumerate(named_symbols, start=1):
         # Extract name and URL from the dictionary
         filename = f"{symbol['name']}.png"  # Add .png extension to name
         url = symbol["symbol_url"]
-
+        
         # Send a GET request to fetch the image content
         response = requests.get(url, stream=True)
         if response.status_code == 200:
             # Full path to save the image
             file_path = os.path.join(output_directory, filename)
 
-            # Write the image content to the file
-            with open(file_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=1024):
-                    f.write(chunk)
-            print(f"Downloaded: {filename} -> {file_path}")
+            if not os.path.exists(file_path):
+            
+                # Write the image content to the file
+                with open(file_path, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        f.write(chunk)
+                print(f"Downloaded: {filename} -> {file_path}")
         else:
             print(f"Failed to download {url}. HTTP status code: {response.status_code}")
     except Exception as e:
         print(f"Error downloading {symbol['name']} ({url}): {e}")
 
 
+# Resize and overwrite the file images
+# def resize_and_overwrite_images(folder_path, target_size=(40, 40)):
+#     """
+#     Resize all images in the specified folder to the target size and overwrite the original files.
+
+#     :param folder_path: Path to the folder containing the images.
+#     :param target_size: Tuple specifying the desired size (width, height) in pixels.
+#     """
+#     if not os.path.exists(folder_path):
+#         print(f"Folder not found: {folder_path}")
+#         return
+
+#     # Loop through all files in the folder
+#     for file_name in os.listdir(folder_path):
+#         file_path = os.path.join(folder_path, file_name)
+
+#         # Check if the file is an image
+#         if file_name.lower().endswith((".png", ".jpg", ".jpeg")):
+#             try:
+#                 # Read the image
+#                 image = cv2.imread(file_path)
+
+#                 # Check if the image was loaded successfully
+#                 if image is None:
+#                     print(f"Failed to read image: {file_path}")
+#                     continue
+
+#                 # Resize the image
+#                 resized_image = cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
+
+#                 # Overwrite the original file with the resized image
+#                 cv2.imwrite(file_path, resized_image)
+#                 print(f"Resized and overwrote: {file_name}")
+
+#             except Exception as e:
+#                 print(f"Error processing file {file_name}: {e}")
+
+#     print("Resizing complete!")
+
+# Call the function to resize images
+# resize_and_overwrite_images(output_directory)
 
 
-
-
-
-
-
-
-
-###Commented out since a DB of symbols is not yet available
-# def match_set_symbol(roi_image, reference_symbols):
-#     # Match the symbol using template matching
-#     for symbol_name, symbol_image in reference_symbols.items():
-#         res = cv2.matchTemplate(roi_image, symbol_image, cv2.TM_CCOEFF_NORMED)
-#         _, max_val, _, _ = cv2.minMaxLoc(res)
-#         if max_val > 0.8:  # Adjust threshold as needed
-#             return symbol_name
-#     return "Unknown"
-
-
-
-# Match set symbol
-# set_symbol_img = thresh[set_symbol_roi[1]:set_symbol_roi[1]+set_symbol_roi[3],
-#                         set_symbol_roi[0]:set_symbol_roi[0]+set_symbol_roi[2]]
-# reference_symbols = {"Base Set": cv2.imread("base_set_symbol.jpg", 0)}
-# set_symbol = match_set_symbol(set_symbol_img, reference_symbols)

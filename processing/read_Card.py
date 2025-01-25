@@ -10,8 +10,8 @@ template_path = "C:/Users/Loya/source/cardScanner/images/templates/trainer_logo.
 
 
 
-# Iterates throught the files found in the directory and:
-#         -Checks if jpg type
+# Iterates through the files found in the directory and:
+#         -Checks if image type
 #         -identifies the ROIs
 #         -preprocesses the image
 #         -extracts name from the rois
@@ -27,7 +27,7 @@ image_folder = "C:/Users/Loya/source/cardScanner/images"
 for file in os.listdir(image_folder):
     
     # Check for jpeg type file
-    if re.search(r"(?i)\.jpe?g$", file):
+    if file.lower().endswith((".png", ".jpg", ".jpeg")):
         
         file_path = os.path.join(image_folder, file)
         
@@ -62,7 +62,7 @@ for file in os.listdir(image_folder):
             name = extract_text(thresh, name_roi)
             #card_number = extract_text(thresh, card_number_roi)
             #card_number = extract_text(thresh)
-            
+
             print(f"Card Type: {card_type}")
             print(f"Name: {name}")
             #print(f"Card Number: {card_number}")
