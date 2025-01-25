@@ -3,5 +3,6 @@
 # pip install pillow
 # pip install pytesseract
 # pip install numpy
+# pip install requests
 
 

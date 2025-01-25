@@ -62,7 +62,7 @@ for file in os.listdir(image_folder):
             name = extract_text(thresh, name_roi)
             #card_number = extract_text(thresh, card_number_roi)
             #card_number = extract_text(thresh)
-
+            
             print(f"Card Type: {card_type}")
             print(f"Name: {name}")
             #print(f"Card Number: {card_number}")
