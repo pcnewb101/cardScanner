@@ -1,13 +1,17 @@
 from card_classifier import *
+from read_number import *
 import os
 import re
 
 
-### Sets up the Trainer Logo for comparison
+
 
 # Path to the trainer logo template
 template_path = "C:/Users/Loya/source/cardScanner/images/templates/trainer_logo.jpg" 
 
+
+# Set the Tesseract path if necessary
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
 # Iterates through the files found in the directory and:
@@ -71,6 +75,18 @@ for file in os.listdir(image_folder):
             cv2.imshow("ROIs Overlay", overlayed_image)
             cv2.waitKey(0)  # Wait until a key is pressed
             cv2.destroyAllWindows()
+            
+        image, thresh = preprocess_number(file_path)
+
+        if image is not None and thresh is not None:
+            result = ROI_number_check(thresh, number_roi_list)
+            set_numbers = result.split('/')
+            card_number = set_numbers[0]
+            set_total = set_numbers[1]
+            if result:
+                print(f"Number detected in ROI:{card_number}")
+            else:
+                print("No valid number found.")
 
 
 

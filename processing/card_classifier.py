@@ -55,6 +55,7 @@ def trainer_text_test(thresh, roi_list):
 
         logo_text = pytesseract.image_to_string(cropped_bin, config ='--psm 13')
 
+
         if re.match(r"(?i)Trainer\s*", logo_text):
             return True
                 

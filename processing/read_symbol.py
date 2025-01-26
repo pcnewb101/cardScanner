@@ -2,6 +2,9 @@
 ## Different preprocessing setting are likely needed and as such will have a different function calls.
 ## Ideally, these functions will be called in read_card py so each image only has to be access in one section of time/memory.
 
+
+# THREE DIFFERENT METHODS ARE PROVIDED HERE. NONE ARE PRODUCING THE DESIRED OUTPUT YET
+
 import cv2
 import numpy as np
 
