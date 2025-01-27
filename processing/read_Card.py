@@ -98,8 +98,10 @@ for file in os.listdir(image_folder):
             mode_val = mode(values)
                 
             
-            
-        print(f"Number detected in ROI:{mode_val}")
+        if mode_val is not None:
+            print(f"Number detected in ROI:{mode_val.mode}\n")
+        else:
+            print("Unable to read Number\n")
 
 
 
