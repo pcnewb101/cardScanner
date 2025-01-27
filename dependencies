@@ -4,5 +4,6 @@
 # pip install pytesseract
 # pip install numpy
 # pip install requests
+# pip install scipy
 
 

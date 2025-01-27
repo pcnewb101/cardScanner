@@ -1,8 +1,8 @@
 from card_classifier import *
 from read_number import *
 import os
-import re
-
+import numpy as np
+from scipy.stats import mode
 
 
 
@@ -38,14 +38,14 @@ for file in os.listdir(image_folder):
         # Get the card type and appropriate ROIs
         try:
             print("Attempting file " + file_path)
-            result = get_card_rois(file_path, template_path)
+            result = get_card_rois(file_path)
             if result is None:
                 print("image = none")
                 exit()
             card_type = result["card_type"]
             name_roi = result["name_roi"]
             #card_number_roi = result["card_number_roi"]
-            trainer_logo_rois = result["trainer_logo_rois"]
+            roi = result["roi"]
         except FileNotFoundError as e:
             print(e)
             exit()
@@ -59,7 +59,7 @@ for file in os.listdir(image_folder):
             #show image with overlay of ROI
             # use this one you want the card number 
             # # rois = [name_roi, card_number_roi] + trainer_logo_rois
-            rois = [name_roi] + trainer_logo_rois
+            rois = [name_roi] + roi
             overlayed_image = visualize_rois(image, rois, text=card_type)
             
             #get text from ROI
@@ -72,21 +72,35 @@ for file in os.listdir(image_folder):
             #print(f"Card Number: {card_number}")
             
             #show overlay
-            cv2.imshow("ROIs Overlay", overlayed_image)
-            cv2.waitKey(0)  # Wait until a key is pressed
-            cv2.destroyAllWindows()
+            # cv2.imshow("ROIs Overlay", overlayed_image)
+            # cv2.waitKey(0)  # Wait until a key is pressed
+            # cv2.destroyAllWindows()
             
-        image, thresh = preprocess_number(file_path)
+        images = test_varients(file_path)
 
-        if image is not None and thresh is not None:
-            result = ROI_number_check(thresh, number_roi_list)
-            set_numbers = result.split('/')
-            card_number = set_numbers[0]
-            set_total = set_numbers[1]
-            if result:
-                print(f"Number detected in ROI:{card_number}")
-            else:
-                print("No valid number found.")
+        values = []
+        
+        
+        for image in images:
+            
+            str_list = ROI_number_check(image, number_roi_list)
+            
+            for set in str_list:
+                set = re.sub(r'[^d\d/]', '', set.strip())              
+                
+                split_value = set.split('/')
+                    
+                card_number = split_value[0]
+                set_total = split_value[1]
+            
+                values.append(int(card_number))
+                
+            mode_val = mode(values)
+                
+            
+            
+        print(f"Number detected in ROI:{mode_val}")
+
 
 
 

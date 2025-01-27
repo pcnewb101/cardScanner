@@ -63,13 +63,12 @@ def trainer_text_test(thresh, roi_list):
 
 
 
-def get_card_rois(image_path, trainer_logo_path):
+def get_card_rois(image_path,):
     """
     Determine the card type and return appropriate ROIs.
     
     Args:
         image_path (str): Path to the card image.
-        trainer_logo_path (str): Path to the trainer logo template.
     
     Returns:
         dict: Dictionary containing the determined card type and relevant ROIs.
@@ -93,16 +92,14 @@ def get_card_rois(image_path, trainer_logo_path):
     if is_trainer:
         return {
             "card_type": "Trainer",
-            "name_roi": (30, 70, 300, 65),
-            #"card_number_roi": (100, 100, 1000, 150),
-            "trainer_logo_rois": trainer_logo_rois,
+            "name_roi": (30, 70, 330, 65),
+            "roi": trainer_logo_rois,
         }
     else:
         return {
             "card_type": "Pokemon",
-            "name_roi": (135, 35, 400, 60),
-            #"card_number_roi": (1500, 800, height - 300, 100),
-            "trainer_logo_rois": trainer_logo_rois,
+            "name_roi": (140, 35, 275, 60),
+            "roi": trainer_logo_rois,
         }
 
 
