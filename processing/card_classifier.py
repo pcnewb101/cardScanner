@@ -61,6 +61,23 @@ def trainer_text_test(thresh, roi_list):
                 
     return False
 
+def energy_text_test(thresh, energy_roi):
+    
+    for roi in energy_roi:
+        x, y, w, h = roi
+        cropped = thresh[y:y+h, x:x+w]
+
+        # Apply adaptive thresholding to the cropped image to make it binary (black and white)
+        _, cropped_bin = cv2.threshold(cropped, 127, 255, cv2.THRESH_BINARY)
+
+        logo_text = pytesseract.image_to_string(cropped_bin, config ='--psm 13')
+
+
+        if re.match(r"(?i)Energy\s*", logo_text):
+            return True
+                
+    return False
+
 
 
 def get_card_rois(image_path,):
@@ -86,8 +103,17 @@ def get_card_rois(image_path,):
         (465, 15, width, 65),  # ROI 2 for trainer logo
     ]
     
+    energy_roi = [
+        (28, 18, 240, 40),
+        (470, 31, 235, 32)
+    ]
+    
+    
     # Check if it's a trainer card
     is_trainer = trainer_text_test(thresh, trainer_logo_rois)
+    
+    is_energy = energy_text_test(thresh, energy_roi)
+    
     
     if is_trainer:
         return {
@@ -95,32 +121,43 @@ def get_card_rois(image_path,):
             "name_roi": (30, 70, 330, 65),
             "roi": trainer_logo_rois,
         }
+        
+    elif is_energy:
+        return {
+            "card_type": "Energy",
+            "name_roi": "Energy",
+            "roi": energy_roi,
+        }
     else:
         return {
             "card_type": "Pokemon",
             "name_roi": (140, 35, 275, 60),
             "roi": trainer_logo_rois,
         }
+        
 
 
 
 def extract_text(thresh, roi):
     """Extract text from a given ROI in the thresholded image."""
-    x, y, w, h = roi
-    roi_image = thresh[y:y+h, x:x+w]
-    text = pytesseract.image_to_string(roi_image, config='--psm 13')  # PSM 8 and 13 seems to do the best for single line extract.
-    return text.strip()
+    if roi == "Energy":
+            return "Energy"
+    else:
+        x, y, w, h = roi
+        roi_image = thresh[y:y+h, x:x+w]
+        text = pytesseract.image_to_string(roi_image, config='--psm 13')  # PSM 8 and 13 seems to do the best for single line extract.
+        return text.strip()
 
 
 
 
         
-def visualize_rois(image, rois, text=None):
-    """Overlay ROIs and optional text on the image for debugging."""
-    for i, roi in enumerate(rois):
-        x, y, w, h = roi
-        color = (0, 255, 0)  # Green for ROIs
-        cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-        if text:
-            cv2.putText(image, f"{text} ROI {i + 1}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
-    return image
+# def visualize_rois(image, rois, text=None):
+#     """Overlay ROIs and optional text on the image for debugging."""
+#     for i, roi in enumerate(rois):
+#         x, y, w, h = roi
+#         color = (0, 255, 0)  # Green for ROIs
+#         cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+#         if text:
+#             cv2.putText(image, f"{text} ROI {i + 1}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+#     return image

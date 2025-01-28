@@ -3,7 +3,7 @@ import pytesseract
 import re
 
 # only one roi to check at the moment but allows quick additional rois if needed
-number_roi_list = [(115, 980, 75, 30), (120, 990, 80, 25)]
+number_roi_list = [(115, 980, 75, 30), (120, 990, 80, 25), (564, 975, 70, 25), (105, 975, 75, 25)]
 
 # parameter inputs for varient of processed image
 gran_varients = [[71,71], [99,99], [51,51], [71,13], [13,71], [13,13]]
@@ -67,6 +67,7 @@ def ROI_number_check(thresh, number_roi_list):
         
         if checked_format is not None:
             found_values.append(checked_format.group())  # Return the valid match found
+        
             
             
     return found_values

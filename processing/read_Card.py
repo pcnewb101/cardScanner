@@ -19,19 +19,24 @@ pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesse
 #         -identifies the ROIs
 #         -preprocesses the image
 #         -extracts name from the rois
-#         
-
-
-#         -TODO: Add card number rois
-#         -saves card name, number and type to csv
+#         -extracts card number rois
+#         -saves card name, number and set total to csv
 
 #Image Directory
 image_folder = "C:/Users/Loya/source/cardScanner/images"
+
+# Dictionary of processed info. Key = auto incremented index. Structure = [key] = [name, number, total set number]
+
+processed_data = {}
+
+key_num = 0
 
 for file in os.listdir(image_folder):
     
     # Check for jpeg type file
     if file.lower().endswith((".png", ".jpg", ".jpeg")):
+        
+        key_num += 1
         
         file_path = os.path.join(image_folder, file)
         
@@ -56,11 +61,11 @@ for file in os.listdir(image_folder):
         if image is None or thresh is None:
             print("Error processing image.")
         else:
-            #show image with overlay of ROI
-            # use this one you want the card number 
-            # # rois = [name_roi, card_number_roi] + trainer_logo_rois
-            rois = [name_roi] + roi
-            overlayed_image = visualize_rois(image, rois, text=card_type)
+            ## DEBUGGING
+            # show image with overlay of ROI
+
+            # rois = [name_roi] + roi
+            # overlayed_image = visualize_rois(image, rois, text=card_type)
             
             #get text from ROI
             name = extract_text(thresh, name_roi)
@@ -80,6 +85,7 @@ for file in os.listdir(image_folder):
 
         values = []
         
+        set_values = []
         
         for image in images:
             
@@ -92,16 +98,27 @@ for file in os.listdir(image_folder):
                     
                 card_number = split_value[0]
                 set_total = split_value[1]
-            
                 values.append(int(card_number))
+                set_values.append(int(set_total))
                 
             mode_val = mode(values)
+            mode_set = mode(set_values)
                 
             
-        if mode_val is not None:
-            print(f"Number detected in ROI:{mode_val.mode}\n")
-        else:
+        if np.isnan(mode_val.mode):
             print("Unable to read Number\n")
+            processed_data[key_num] = {
+                "name": name,
+                "number": "N/A",  # Handle NaN as a string
+                "printedTotal": "N/A"
+            }
+        else:
+            print(f"Number detected in ROI: {mode_val.mode}\n")
+            processed_data[key_num] = {
+                "name": name,
+                "number": mode_val.mode,
+                "printedTotal": mode_set.mode
+            }
 
 
 
