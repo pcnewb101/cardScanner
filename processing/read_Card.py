@@ -44,7 +44,7 @@ def read_card():
             
             # Get the card type and appropriate ROIs
             try:
-                print("Attempting file " + file_path)
+                print("Attempting file " + file)
                 result = get_card_rois(file_path)
                 if result is None:
                     print("image = none")
@@ -73,7 +73,8 @@ def read_card():
                 name = extract_text(thresh, name_roi)
                 #card_number = extract_text(thresh, card_number_roi)
                 #card_number = extract_text(thresh)
-                name = re.sub(r"[^a-zA-Z0-9s,\"']", "", name)
+                name = re.sub(r"[^a-zA-Z0-9\s,\"']", "", name)
+                name = " ".join(name.split())
                 print(name)
                 
                 

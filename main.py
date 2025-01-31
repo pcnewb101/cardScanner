@@ -1,21 +1,28 @@
-from datetime import datetime
+
 import csv
 
-current_date = datetime.now()
+""" Running this file as a module (python -m main) will
+    - check the images file for content
+    - process the images (processing directory)
+        - check for type of card (energy, trainer, or Pokémon)  # card_classifier
+        - adjust ROI of OCR for name and number  # read_Card # read_number 
+        - store the processed information into file  # write_file
+    - compare the processed information to existing list of Pokémon data  # integration\\check_name
+    - if match is found:
+        - structure an API call to retrieve all data, including prices
+        - populate a new CSV file with all the card’s details"""
 
-current_date = current_date.strftime("%Y-%m-%d")
-csv_file = f"processed_data\\bulk_cards-{current_date}.csv"
-
-
-if csv_file in os.listdir("C:/Users/Loya/source/cardScanner"):
-    
-    print("File for today exists.")
-    
-    key_num = 0
-
-    answer = input("Process New Data? (y/n)".strip().lower())
+def main():
+    print("Hello! Would you like to start the process of checking for images, processing them and generating new CSV files?")
+    answer = input("y/n: ").strip().lower()
 
     if answer == "y":
-        run read card             
+        from integration.name_check import name_check
+        name_check()
+        
     else:
-        print("No data processed.")
+        print("Thank you. Program ending.")
+
+# Prevent execution on import
+if __name__ == "__main__":
+    main()
